@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>館へのご案内｜Oira</title>
+    <meta name="description" content="Oiraの共有リンク受け皿。アプリがあれば館を開き、なければインストールをご案内します。" />
+    <meta name="robots" content="noindex" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <!--
+      404.html は GitHub Pages が「存在しないパス」に対して返すページ（M23(1)④）。
+      札共有リンク `/m/<code>`（M22(4)）もサーバー上に実ファイルが無いため、ここへ来る。
+      JS で現在のパスを見て、
+        (a) `/m/<code>` なら → 館の受け皿（アプリで開く／インストール案内）
+        (b) それ以外       → 通常の「ページが見つかりません」
+      を出し分ける。App Links が有効な端末では、そもそもブラウザに来る前にアプリが開く。
+    -->
+    <main class="wrap center" id="root">
+      <header class="masthead" style="text-align: left">
+        <p class="kicker">MUSEUM OF THE NAMELESS</p>
+        <h1>Oira<span class="seal">観</span></h1>
+      </header>
+      <div id="body">
+        <p class="lead">読み込んでいます…</p>
+      </div>
+      <footer style="text-align: left">
+        <p><a href="/">← Oira トップ</a></p>
+      </footer>
+    </main>
+
+    <script>
+      (function () {
+        'use strict';
+        // アプリ側 deepLink.ts の CODE_RE と一致させる（館 code の形）。
+        var CODE_RE = /^[A-Za-z]{2,4}-?[A-Za-z0-9]{2,8}$/;
+        // Google Play のアプリ ID（app.json の android.package と一致）。
+        var PACKAGE = 'com.oira.museum';
+        var PLAY_URL = 'https://play.google.com/store/apps/details?id=' + PACKAGE;
+        var SCHEME = 'oira';
+
+        function esc(s) {
+          return String(s).replace(/[&<>"']/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+          });
+        }
+
+        function extractCode() {
+          var m = /^\/m\/([^/?#]+)/i.exec(location.pathname);
+          if (!m) return null;
+          var raw;
+          try {
+            raw = decodeURIComponent(m[1]);
+          } catch (e) {
+            raw = m[1];
+          }
+          raw = raw.trim().toUpperCase();
+          return CODE_RE.test(raw) ? raw : null;
+        }
+
+        var body = document.getElementById('body');
+        var code = extractCode();
+
+        if (code) {
+          var appUrl = SCHEME + '://m/' + encodeURIComponent(code);
+          // Android Chrome 向けの堅牢な起動（STORE-B1）: intent:// はインストール済みならアプリを開き、
+          // 未インストールなら browser_fallback_url（Play）へ自動遷移する。生の oira:// スキームは
+          // 未インストール時に Chrome が ERR_UNKNOWN_URL_SCHEME を出す（この受け皿は「App Links が効かない/
+          // 未インストールの人」専用なので、その堅牢性が本体）。
+          var intentUrl =
+            'intent://m/' + encodeURIComponent(code) +
+            '#Intent;scheme=' + SCHEME + ';package=' + PACKAGE +
+            ';S.browser_fallback_url=' + encodeURIComponent(PLAY_URL) + ';end';
+          body.innerHTML =
+            '<p class="lead">Oiraの、ある館へのご招待です。</p>' +
+            '<div class="code-chip">' + esc(code) + '</div>' +
+            '<p class="lead">アプリをお持ちの方は「アプリで開く」から。まだの方は、そのまま Google Play のインストール案内へ進みます。</p>' +
+            '<p>' +
+            '<a class="btn primary" href="' + esc(intentUrl) + '">アプリで開く</a>' +
+            '<a class="btn" href="' + esc(PLAY_URL) + '">Google Play で入手</a>' +
+            '</p>' +
+            // 非 Chrome ブラウザ（intent:// 非対応）向けに現行のカスタムスキームも残す（フォールバック）。
+            '<p class="meta">うまく開かないときは <a href="' + esc(appUrl) + '">こちら</a>（アプリのリンク）。館コード：' + esc(code) + '</p>';
+          // インストール済みなら App Links / intent でアプリが前面に出る。取りこぼしに備え、
+          // ユーザー操作なしの自動遷移はしない（未インストール時のエラー表示を避ける）。
+        } else {
+          document.title = 'ページが見つかりません｜Oira';
+          body.innerHTML =
+            '<h2 style="margin-top:8px">ページが見つかりません</h2>' +
+            '<p class="lead">お探しのページは移動または削除された可能性があります。</p>' +
+            '<p><a class="btn" href="/">Oira トップへ</a></p>';
+        }
+      })();
+    </script>
+  </body>
+</html>

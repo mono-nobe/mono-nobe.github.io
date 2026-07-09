@@ -1,0 +1,269 @@
+/*
+ * style.css — Oira 公開 Web（GitHub Pages ユーザーサイト）の共通スタイル（M23(1)）。
+ *
+ * アプリと同じ静謐な図録トーン（紙と墨、たった一点の朱）。装飾グラデーション・絵文字は使わない。
+ * 色トークンはアプリ src/theme/tokens.ts に対応（paper/ink/soft/rule/seal）。
+ */
+
+:root {
+  --paper: #f4f1ea;
+  --card: #faf8f2;
+  --ink: #2f2e2a;
+  --soft: #6f6c63;
+  --faint: #a7a296;
+  --rule: #e3ddce;
+  --rule-strong: #cfc8b6;
+  --seal: #9c5a4d;
+  --danger: #b5524a;
+  --mincho: 'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+  --gothic: 'Zen Kaku Gothic New', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--gothic);
+  font-size: 16px;
+  line-height: 1.9;
+  letter-spacing: 0.02em;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+/* ヘッダ（館銘＋朱の印） */
+.masthead {
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 20px;
+  margin-bottom: 32px;
+}
+
+.masthead .kicker {
+  font-family: var(--gothic);
+  font-size: 11px;
+  letter-spacing: 0.34em;
+  color: var(--faint);
+  margin: 0 0 8px;
+  text-transform: uppercase;
+}
+
+.masthead h1 {
+  font-family: var(--mincho);
+  font-weight: 600;
+  font-size: 30px;
+  letter-spacing: 0.28em;
+  margin: 0;
+  display: inline-block;
+}
+
+/* 朱の印（唯一の差し色。装飾ではなく「観」の一点） */
+.seal {
+  display: inline-block;
+  margin-left: 12px;
+  width: 26px;
+  height: 26px;
+  line-height: 24px;
+  text-align: center;
+  border: 1px solid var(--seal);
+  color: var(--seal);
+  font-family: var(--mincho);
+  font-size: 14px;
+  vertical-align: 8px;
+  border-radius: 2px;
+}
+
+h2 {
+  font-family: var(--mincho);
+  font-weight: 600;
+  font-size: 20px;
+  letter-spacing: 0.14em;
+  margin: 44px 0 12px;
+  padding-top: 8px;
+}
+
+h3 {
+  font-family: var(--gothic);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  margin: 28px 0 8px;
+  color: var(--ink);
+}
+
+p {
+  margin: 0 0 16px;
+  color: var(--ink);
+}
+
+.lead {
+  color: var(--soft);
+  font-size: 15px;
+}
+
+.meta {
+  color: var(--faint);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+}
+
+ul,
+ol {
+  margin: 0 0 16px;
+  padding-left: 1.4em;
+}
+
+li {
+  margin: 0 0 8px;
+}
+
+a {
+  color: var(--seal);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(156, 90, 77, 0.4);
+}
+
+a:hover {
+  border-bottom-color: var(--seal);
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 40px 0;
+}
+
+/* 目次・ページ間リンクのカード */
+.index {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0 0;
+}
+
+.index li {
+  border-top: 1px solid var(--rule);
+  margin: 0;
+}
+
+.index li:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+
+.index a {
+  display: block;
+  padding: 18px 4px;
+  border-bottom: none;
+  color: var(--ink);
+}
+
+.index a .t {
+  font-family: var(--mincho);
+  font-size: 17px;
+  letter-spacing: 0.1em;
+}
+
+.index a .d {
+  display: block;
+  color: var(--soft);
+  font-size: 13px;
+  margin-top: 4px;
+  letter-spacing: 0.02em;
+}
+
+/* 強調ボックス（削除リクエストの手順など） */
+.note {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  padding: 20px 22px;
+  margin: 24px 0;
+}
+
+.note h3 {
+  margin-top: 0;
+}
+
+/* ボタン（アプリで開く 等） */
+.btn {
+  display: inline-block;
+  font-family: var(--gothic);
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  padding: 14px 26px;
+  min-height: 44px;
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  background: var(--card);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.btn.primary {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.btn + .btn {
+  margin-left: 12px;
+}
+
+footer {
+  margin-top: 64px;
+  padding-top: 24px;
+  border-top: 1px solid var(--rule);
+  color: var(--faint);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+}
+
+footer a {
+  color: var(--soft);
+  border-bottom-color: rgba(111, 108, 99, 0.4);
+}
+
+/* 受け皿ページ（/m/<code>）中央寄せ */
+.center {
+  text-align: center;
+  padding-top: 8vh;
+}
+
+.center .btn {
+  margin: 6px;
+}
+
+.code-chip {
+  display: inline-block;
+  font-family: var(--mincho);
+  font-size: 22px;
+  letter-spacing: 0.24em;
+  border: 1px solid var(--rule-strong);
+  padding: 6px 18px;
+  margin: 4px 0 20px;
+  background: var(--card);
+}
+
+@media (max-width: 480px) {
+  .wrap {
+    padding: 28px 18px 64px;
+  }
+  .masthead h1 {
+    font-size: 24px;
+    letter-spacing: 0.2em;
+  }
+  .btn + .btn {
+    margin-left: 0;
+    margin-top: 12px;
+  }
+}
